@@ -1,0 +1,58 @@
+CPS305 Assignment 1
+
+---------------------------
+
+Topics: 
+------
+  Trees, BST and AVL
+
+Files:
+------
+  A1-studentnumber.py
+  Incorrectly named files will receive a mark of zero.
+
+Submit Files:
+------------
+  Submit file through D2L
+
+Summary:
+--------
+
+Given:  You are given a Python Class template. In this template, there
+        3 classes: MyTree, MyBST, MyAVL. The goal of this lab is to
+        implement complete binary trees, binary search trees and AVL 
+        trees.
+       
+Task:   - First, create a method called getName() that returns your 
+        name. If this does not work, you will receive a mark of zero.  
+        
+        - You are given the class MyTree in the template file. You must
+        use this class to implment a complete binary tree. The following 
+        methods: getLeft(), getRight(), getData(), are given. Do not 
+        change them. The method __init__(x) is also given. You may add 
+        to this. You are to implement the insert(x) and getHeight() 
+        methods. Each child should itself be a MyTree object. 
+
+        - The insert(x) method should be implemented with a recursive 
+        algorithm. The final return is the root node. The getHeight() 
+        method should return the height of the node. It should be an
+        O(1) operation. The height of a leaf node should be zero. 
+        
+        - A class called MyBST that extends MyTree is given. Override 
+        the method insert(x) to meet the definitions of a Binary Search 
+        Tree. Create a method called __contains__(x) that returns true 
+        if x is in the tree.
+        
+        - A class called MyAVL that extends MyBST is given. Override 
+        the method insert(x) to meet the definitions of an AVL Tree. 
+        Create a method called getBalanceFactor() that returns the 
+        balance factor of the node. It is suggested that you implement 
+        the methods leftRotate() and rightRotate().
+        
+Rule:   You cannot use Python's list in your implementation. This 
+        includes the methods appends, pop, etc. You must use the Node 
+        class given.
+
+Use A1Tester.py to test your code
+Example command line:
+$python A1Tester.py A1-123456789.py
