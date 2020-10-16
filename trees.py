@@ -396,3 +396,12 @@ class AVL(BST):
 
             current.updateAll(current)
 
+    #Returns the depth of each node.
+    def getDepth(self, counter = 0):
+        if self.parent == None:
+            return counter
+        else: 
+            counter +=1
+            return self.parent.getDepth(counter)
+
+
