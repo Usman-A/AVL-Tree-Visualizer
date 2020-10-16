@@ -15,6 +15,9 @@ class Main:
         self.canvas = Canvas(window, width = self.width, height = self.height,bg="white")
         self.canvas.pack()
 
+        #Boolean stating that tree is empty
+        self.empty = True
+
         # Creating a window and adding labels
         frame1 = Frame(window)
         frame1.pack()
@@ -33,14 +36,23 @@ class Main:
     #draws a circle with a number in it
     def createNode(self,x,y,data):
         r = 20
-        self.canvas.create_oval(x-r,y-r,x+r,y+r)
+        self.canvas.create_oval(x-r,y-r,x+r,y+r, tags = "tree")
         self.canvas.create_text(x-6, y, anchor=W, text=data, tags = "tree")
+        print(self.avl_tree)
 
     def display(self):
         #Deleting previous tree
         self.canvas.delete("tree")
-        userInput = (self.userInput.get()) 
-        return self.createNode(300,30, userInput)
+        try:
+            userInput = int(self.userInput.get()) 
+        except:
+            self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a number", tags = "tree")
+        if (self.empty):
+            self.avl_tree = AVL(userInput)
+            self.empty = False
+        else:
+            self.avl_tree = self.avl_tree.insert(userInput)
 
+        return self.createNode(300,30, userInput)
 
 Main()
