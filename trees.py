@@ -5,9 +5,12 @@ import random
 def getName():
     return "Asad, Usman"
 
+## This class is used to create a binary tree, where there is a parent node that can have a max of 2 children.
+#  The tree inserts new data in a way that it enforces that it is a full binary tree (aka 'complete' binary tree), 
+#  filling the tree up from left to right
+class Tree():
 
-class MyTree():
-
+    #In this implementation tree's are initiated with data, we can't have an empty tree. 
     def __init__(self, data, parent=None):
         # Initialize this node, and store data in it
         self.data = data
@@ -29,11 +32,11 @@ class MyTree():
         # Return the data contained in this node
         return self.data
 
+    ## This method is used to find the number of children that a specific node has
     def findDecendants(self):
 
         if (self == None):
             return 0
-        # going to use traversal example from lecture to count the number of decendants
         queue = deque()
         queue.append(self)
         # Number of kids, set to -1 since self is going to be counted, and it shouldn't be
@@ -47,6 +50,7 @@ class MyTree():
                 queue.append(popped.getRight())
         return count
 
+    #This method is used to update the height of node in a tree
     def updateHeight(self):
         leftHeight = -1
         rightHeight = -1
@@ -55,27 +59,25 @@ class MyTree():
         if(self.right != None):
             rightHeight = self.right.getHeight()
         if (self.isLeaf()):
-            # print("is leaf")
             self.height = 0
         else:
             self.height = (1 + max(leftHeight, rightHeight))
-            # print(self.data, "height", self.height)
 
+    #This updates the height of every node in the tree
     def updateAll(self, tree):
         if (tree != None):
-            # print ("updating", tree.data, self.isLeaf())
             tree.updateHeight()
-            # print("PASSING                          " ,tree.parent)
             if(tree.parent == None):
                 return tree
             return tree.updateAll(tree.parent)
 
+    #Checks if both left and right branches of a tree have data
     def isFull(self):
         if self.left != None and self.right != None:
             return True
 
+    #Checks if the specific tree is complete or not.
     def isComplete(self, tree):
-
         if (tree == None or tree.isLeaf()):
             return True
 
@@ -85,7 +87,6 @@ class MyTree():
         return False
 
     def isLeaf(self):
-        # print("lil tecca", self.left, self.right)
         if self.left == None and self.right == None:
             return True
 
@@ -111,25 +112,18 @@ class MyTree():
             rightSize = tree.right.findDecendants()
             rightHeight = tree.right.getHeight()
 
-        # print("inhee data:",data, "ls:",leftSize,"rs:",rightSize)
-
         # for adding first child
         if (totalKids == 0):
-             # icnrease hieght here
-            tree.left = MyTree(data, tree)
+            tree.left = Tree(data, tree)
             tree.updateAll(tree)
-            # print("put-left", data)
             return tree
         elif (totalKids == 1):
-            tree.right = MyTree(data, tree)
+            tree.right = Tree(data, tree)
             tree.updateAll(tree)
             # print("put-right", data)
             return tree
 
         # goal is to fill up left first
-
-        # print("LEFT",    leftSize,leftHeight,"| RIGHT", rightSize,rightHeight)
-
         if (leftSize > rightSize):
             # check if left is full, if not insert somewhere
             if(tree.left.isFull()):
@@ -140,7 +134,7 @@ class MyTree():
             if(leftSize == rightSize):
                 tree.insert(data, tree.left)
 
-        # print("going to return",type(tree),type(self), tree)
+        #returning the node that has been added
         return(tree)
 
     def __str__(self):
@@ -165,41 +159,46 @@ class MyTree():
         return self.height
 
 
-class MyBST(MyTree):
+
+## Creating a Binary Search Tree, this tree extends the initial tree we made above
+class BST(Tree):
+
+    #In this implementation tree's are initiated with data, we can't have an empty tree. 
     def __init__(self, data, parent=None):
         # Initialize this node, and store data in it
         super().__init__(data, parent)
 
-    # Insert data into the tree, descending from this node
-    # Ensure that the tree remains a valid Binary Search Tree
-    # Return this node after data has been inserted
-
+    #Inserts nodes into the tree maintaing a propper order where leftNode < parentNode < rightNode
+    # returns the created node
     def insert(self, data, tree=None):
+
         if (tree == None):
             tree = self
-        # print("Current Insertion: input  compareTo", data, tree.data )
+
+        #If data being inserted is smaller than parent, insert on left
         if(data < tree.data):
+            #if left tree is empty, add current data and update tree's height
             if (tree.left == None):
-                tree.left = MyBST(data, tree)
-                # print("put-Keft", data)
+                tree.left = BST(data, tree)
                 tree.updateAll(tree)
-                # print("put-left", data)
                 return tree
+            #other wise keep going left
             else:
-                # print("passing left")
                 tree.insert(data, tree.left)
+
         else:
+            #If the right tree is empty, add the current data and update the tree's height
             if(tree.right == None):
-                tree.right = MyBST(data, tree)
-                # print("put-Right", data, "mydad", tree.data)
+                tree.right = BST(data, tree)
                 tree.updateAll(tree)
-                # print("put-right", data)
                 return tree
+            #otherwise keep going down
             else:
-                # print ("passing right")
                 tree.insert(data, tree.right)
+
         return tree
 
+    #This method checks if the given element is present in the tree
     def __contains__(self, data, tree=None):
         # Returns true if data is in this node or a node descending from it
         if (tree == None):
@@ -233,18 +232,20 @@ class MyBST(MyTree):
 
         return (str(l) + " " + str(m) + " " + str(r))
 
-
-class MyAVL(MyBST):
+#This AVL tree extends the previous binary search tree
+# An AVL tree is a version of a binary search tree, 
+# what it does is it try's to maintain a balance as elements are inserted.
+# Try's to keep the tree as complete as possible, so it doesn't become too heavy 
+# on the left or right side. 
+class AVL(BST):
     def __init__(self, data, parent=None):
         # Initialize this node, and store data in it
         super().__init__(data, parent)
-        self.insertFLag = None
-        pass
+        
 
-    def updateTree(self):
-        # i think i might need to update all balance factors and shit
-        print("Noooo")
-
+    # This method is used to figure out if the left branch or right branch is balanced.
+    # Balance is determined by comparing the heights of the left and right branches of the tree.
+    # the maximum difference in height between the two branches is 1. Otherwise the tree needs to be balanced
     # Positive means leanig towards left.
     # Negative means leaning towards right
     def getBalanceFactor(self):
@@ -256,18 +257,17 @@ class MyAVL(MyBST):
         if (self.right != None):
             right = self.right.getHeight()
         return (left - right)
-        pass
+        
 
-    # FLag is used to figure out if it is a left left case or left right
-    # or the otherway around using right values
-    # flag == false, means left
-    # flag == right, means right
+    # Using the balance factors of the tree's we can figure out what type of rotation needs to be done
+    # inorder to balance the tree's. 
     def checkBalance(self, tree):
-        # print("Balancing: ", tree)
         if (tree != None):
+            #Get's the tree's balance factor
             bf = tree.getBalanceFactor()
             if (abs(bf) >= 2):
                 # narrowing down cases, check if left or right heavy
+                # positive balance factor means leaning towards left
                 if(bf > 0):
                     bal = 0
                     if (tree.left != None):
@@ -279,6 +279,7 @@ class MyAVL(MyBST):
                         #DOUBLE ROTATION
                         tree.left.leftRotate()
                         tree.rightRotate()
+                # negative balance factor means leaning towards right                        
                 elif (bf < 0):
                     bal = 0
                     if (tree.right != None):
@@ -289,54 +290,65 @@ class MyAVL(MyBST):
                         tree.right.rightRotate()
                         tree.leftRotate()
 
-        # Insert data into the tree, descending from this node
-        # Ensure that the tree remains a valid AVL tree
-        # Return the node in this node's position after data has been inserted
+    # Insert data into the tree, descending from this node
+    # Ensure that the tree remains a valid AVL tree
+    # Return the node in this node's position after data has been inserted
+    # Using the parameters 'tree'. 'inserted' and 'final' to help with the recursion later on 
     def insert(self, data, tree=None, inserted=False, final=None):
+         
+        #Check's if the tree is balanced after the insertion, 
+        # if so, it returns the root node of the tree
         if(data == "balance" and tree == None):
-            # print("here", data)
             return final
+
+        # If a tree hasn't been passed, uses self as the tree to work on.     
         if (tree == None):
             tree = self
+
+        #Check's if the data element has been inserted, if it isn't it try's to insert it      
         if(not inserted):
-            # print(data)
+            
+            # If data being inserted is smaller than parent, insert on left
             if(data < tree.data):
                 if (tree.left == None):
-                    tree.left = MyAVL(data, tree)
-                    flag = False
-                    return tree.insert("balance", tree.left, True, flag)
+                    tree.left = AVL(data, tree)
+                    #Insert the data into the tree, set data to "balance", and inserted to true
+                    #so we can work on balancing the tree after the insertion
+                    return tree.insert("balance", tree.left, True)
                 else:
+                    #Keep going left since right spot for data hasn't been found
                     return tree.insert(data, tree.left, False)
+            # If data being inserted is greater than parent, insert on right                    
             else:
                 if(tree.right == None):
-                    tree.right = MyAVL(data, tree)
-                    flag = True
-                    return tree.insert("balance", tree.right, True, flag)
+                    tree.right = AVL(data, tree)
+                    return tree.insert("balance", tree.right, True)
                 else:
                     return tree.insert(data, tree.right, False)
+                    
+        # Data has been inserted, now we have to check if the AVL balance is being maintained                    
         else:
-            # We've reached the top, and now it is time to return the tree
+            #Update the height after insertion of new data
+            tree.updateHeight()                        
+
+            #Checks if current node is the root of the tree
             if(tree.parent == None):
-                tree.updateHeight()
+                #check if the tree is balanced, if it isn't balance it, then return root node
                 if abs(tree.getBalanceFactor()) > 1:
                     tree.checkBalance(tree)
+                #Note this return statement is being given data for the 'final' parameter
+                # up above we have a statement that terminates the rescursion if a final is not null                    
                 return tree.insert("balance", tree.parent, True, tree)
             else:
-                tree.updateHeight()
+                #check if the tree is balanced, if it isn't balance it, then call function on parent                
                 if abs(tree.getBalanceFactor()) > 1:
                     tree.checkBalance(tree)
                 return tree.insert("balance", tree.parent, True)
 
-    def checkTree(self, tree):
-        if (tree.parent != None):
-            return tree.checkTree(tree.parent)
-        if(tree.parent == None):
-            return tree
-
+    # Rotating a tree to the left
     def leftRotate(self):
 
         parent = self.parent
-
         current = self
 
         newTop = current.right
@@ -359,10 +371,10 @@ class MyAVL(MyBST):
 
             current.updateAll(current)
 
+    # Rotating a tree to the Right
     def rightRotate(self):
 
         parent = self.parent
-
         current = self
 
         newTop = current.left
@@ -384,130 +396,3 @@ class MyAVL(MyBST):
 
             current.updateAll(current)
 
-
-# print("AVL test")
-# print("------------------")
-# tree = MyAVL(15)
-# root = tree.insert(17)
-# root = tree.insert(16)
-# print(root)
-
-# root = tree.insert(18)
-# root = tree.insert(40)
-# root = tree.insert(20)
-# print(root)
-# print("+++++++++++++++")
-# # root.left.leftRotate()
-# # # print(root)
-# # # print(root.left)
-# # root.rightRotate()
-# # print(root.parent)
-# # print(root.left)
-# # root.leftRotate()
-# # print(root.parent)
-# # print(root.getHeight())
-# print("------------------")
-# # ##
-# # left left insertion, single rotate right
-# ## right right insertinon, single rotate left
-
-
-# # # l = [16,22,8,6,7,8,9,24,23]
-
-# avl = MyAVL(10)
-# a = avl.insert(16)
-# a = a.insert(22)
-
-# a = a.insert(8)
-# a= a.insert(6)
-# # # print("root", a, "SHOULD BE none ->", a.parent )
-# # # print("++++")
-# # # print(a.left)
-
-# # # a = a.insert(6)
-# # # print(a, "oko")
-# # print("-----------")
-# a = a.insert(7)
-# a = a.insert(8)
-# a = a.insert(9)
-# a = a.insert(24)
-# a = a.insert(23)
-# print(a.right.left)
-# # # print("gddddddddddd")
-
-# ##BST TEST
-# tree = MyBST(15)
-# a=tree.insert(10)
-# b=tree.insert(13)
-# c=tree.insert(9)
-# tree.insert(18)
-# tree.insert(16)
-# tree.insert(15)
-# tree.insert(8)
-# tree.insert(15)
-# tree = tree.insert(20)
-# print(tree.left)
-# print(tree)
-# print(tree.right)
-# print(tree.right.left)
-# print(type(tree))
-# # print(3 in tree)
-# # tree.insert(3)
-# # print(3 in tree)
-# # af = tree.insert(33)
-# # tta = tree.insert(33)
-
-
-# print("====================---")
-# print (12 in tree)
-
-
-# print("sametype", type(af) == type(tta), af, "|", tta)
-# # print(6 in tree)
-
-# print(type(a) == type (b) == type(c))
-
-
-# test = MyTree(10)
-
-# a=test.insert(2)
-# b=test.insert(4)
-
-# test.insert(1)
-# test.insert(9)
-
-# test.insert(11)
-# test.insert(14)
-# test.insert(111)
-# test.insert(222)
-# test.insert(33)
-# test.insert(44)
-# test.insert(55)
-# test.insert(66)
-# test.insert(77)
-# test.insert(88)
-
-# print("complete test", test.isComplete(test))
-# print(test.left.left)
-# print(test.left)
-# print(test.left.right)
-# print(test)
-# print(test.right.left)
-# print(test.right)
-# print(test.right.right)
-
-# current = test.left.left
-# print (a)
-
-# print(type(a),type(b))
-# print("height", test.right.getHeight())
-# #testing imported queue
-# test = deque()
-# print(type (test))
-# test.append(2)
-# test.append(3)
-# print(test)
-# print(test.count(2))
-# print(len(test), "h")
-# test.append(44)
-# print(len(test), "h")
