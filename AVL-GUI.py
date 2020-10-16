@@ -40,19 +40,33 @@ class Main:
         self.canvas.create_text(x-6, y, anchor=W, text=data, tags = "tree")
         print(self.avl_tree)
 
+    def error(self):
+        self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a number", tags = "tree")
+
+
     def display(self):
-        #Deleting previous tree
+
+        #Deleting previously drawn tree
         self.canvas.delete("tree")
+
+        #Making sure user input is an integer
         try:
             userInput = int(self.userInput.get()) 
-        except:
-            self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a number", tags = "tree")
-        if (self.empty):
-            self.avl_tree = AVL(userInput)
-            self.empty = False
-        else:
-            self.avl_tree = self.avl_tree.insert(userInput)
 
-        return self.createNode(300,30, userInput)
+            # If this is the first entity in the tree, create the tree
+            if (self.empty):
+                self.avl_tree = AVL(userInput)
+                self.empty = False
+            # Otherwise insert in tree             
+            else:
+                self.avl_tree = self.avl_tree.insert(userInput)     
+            
+            # drawNode -- This should later be changed to call a drawTree function
+            return self.createNode(300,30, userInput)
+        except:
+            return self.error()       
+
+
+
 
 Main()
