@@ -18,6 +18,7 @@ class Main:
         #Boolean stating that tree is empty
         self.empty = True
 
+        #value used for choosing distance between nodes
         self.delta = 30
 
         # Creating a window and adding labels
@@ -37,12 +38,17 @@ class Main:
 
         window.mainloop() 
 
+    #Added a resize window method, this is not fully functional atm
     def resizeWindow(self,axis):
         if (axis == "x"):
-            self.window.geometry("%ix%i" % (self.width*1.2,self.height*1.1))
+            self.width = self.width *1.2
+            self.height = self.height*1.1
+            self.window.geometry("%ix%i" % (self.width,self.height))
             self.frame.pack()
         if (axis == "y"):
-            self.window.geometry("%ix%i" % (self.width*1.1,self.height*1.2))
+            self.width = self.width *1.1
+            self.height = self.height*1.2            
+            self.window.geometry("%ix%i" % (self.width,self.height))
             self.frame.pack()
 
 
@@ -56,9 +62,10 @@ class Main:
     def error(self):
         self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a whole number", tags = "tree")
 
-    #Testing preorderTraversal code
+
     #Tree is the tree that needs to be drawn
     #Pos is a boolean representing left or right, False is left. 
+    #x,y are parent node's coordinates
     def drawTree(self,tree,x,y,pos=None):
         #If the tree is null, exit.
         if (tree == None):
@@ -86,9 +93,6 @@ class Main:
             else:
                 scale = self.delta * tree.findDecendants()
 
-            # print("working on: ", tree.data, "depth|height: ", depth,"|",height,"--scale: ", scale, tree.isLeaf())
-
-
             #The new Y coordinate
             y1 = y + 2.5 * self.delta
 
@@ -100,8 +104,7 @@ class Main:
                 x1 = x + scale
                 arrowDir = 1
 
-            # print("creating: ", tree.data, "X1 is: ", x1)
-
+            #Resizing if node is about to be drawn out of window    
             if(x1 > self.width):
                 self.resizeWindow("x")
             if(y1 > self.height):
@@ -122,7 +125,7 @@ class Main:
         #Deleting previously drawn tree
         self.canvas.delete("tree")
 
-        # #Making sure user input is an integer
+        #Making sure user input is an integer
         try:
             userInput = int(self.userInput.get()) 
             # If this is the first entity in the tree, create the tree
@@ -132,12 +135,10 @@ class Main:
             # Otherwise insert in tree             
             else:
                 self.avl_tree = self.avl_tree.insert(userInput)  
-            
-            # print("number of kids", self.avl_tree.findDecendants(), "-------------------------------------------------------") 
+
             return self.drawTree(self.avl_tree,self.width/2, 30)
         except:
             return self.error()       
-
 
 
 Main()
