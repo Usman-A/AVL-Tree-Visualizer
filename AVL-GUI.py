@@ -23,6 +23,7 @@ class Main:
         # Creating a window and adding labels
         frame1 = Frame(window)
         frame1.pack()
+        self.frame = frame1
 
         #Creating I/O for inserting into the AVL tree.
         Label(frame1, text = "Enter a value:").pack(side = LEFT,padx=10)
@@ -32,13 +33,24 @@ class Main:
         Entry(frame1, textvariable = self.userInput, justify = RIGHT).pack(side = LEFT, padx=20)
         Button(frame1, text = "Insert", command = self.display).pack(side = RIGHT)
 
+        self.window = window
+
         window.mainloop() 
+
+    def resizeWindow(self,axis):
+        if (axis == "x"):
+            self.window.geometry("%ix%i" % (self.width*1.2,self.height*1.1))
+            self.frame.pack()
+        if (axis == "y"):
+            self.window.geometry("%ix%i" % (self.width*1.1,self.height*1.2))
+            self.frame.pack()
+
 
     #Creating a node from user input
     #draws a circle with a number in it
     def createNode(self,x,y,data):        
         r = 20
-        self.canvas.create_oval(x-r,y-r,x+r,y+r, tags = "tree")        
+        self.canvas.create_oval(x-r,y-r,x+r,y+r, tags = "tree", fill="#82ffb4")        
         self.canvas.create_text(x-6, y, anchor=W, text=data, tags = "tree")
 
     def error(self):
@@ -89,6 +101,12 @@ class Main:
                 arrowDir = 1
 
             # print("creating: ", tree.data, "X1 is: ", x1)
+
+            if(x1 > self.width):
+                self.resizeWindow("x")
+            if(y1 > self.height):
+                self.resizeWindow("y")                
+
             #Drawing current node, and arrow    
             self.createNode(x1,y1,tree.data)
             self.canvas.create_line(x, y+20, x1, y1-20, arrow=LAST,tags = "tree")
@@ -104,7 +122,7 @@ class Main:
         #Deleting previously drawn tree
         self.canvas.delete("tree")
 
-        #Making sure user input is an integer
+        # #Making sure user input is an integer
         try:
             userInput = int(self.userInput.get()) 
             # If this is the first entity in the tree, create the tree
