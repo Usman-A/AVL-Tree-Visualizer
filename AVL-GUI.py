@@ -10,7 +10,7 @@ class Main:
 
         #Adding a title to the window, and setting attributes
         window.title("AVL Tree")
-        self.width = 900
+        self.width = 1000
         self.height = 600
         self.canvas = Canvas(window, width = self.width, height = self.height,bg="white")
         self.canvas.pack()
@@ -18,11 +18,6 @@ class Main:
         #Boolean stating that tree is empty
         self.empty = True
 
-        #Storing initial coodrinate for first node
-        self.x0 = self.width/2 - 20
-        self.y0 = 10
-        self.x1 = self.width/2 + 20
-        self.y1 = 50
         self.delta = 30
 
         # Creating a window and adding labels
@@ -47,7 +42,7 @@ class Main:
         self.canvas.create_text(x-6, y, anchor=W, text=data, tags = "tree")
 
     def error(self):
-        self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a number", tags = "tree")
+        self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a whole number", tags = "tree")
 
     #Testing preorderTraversal code
     #Tree is the tree that needs to be drawn
@@ -75,25 +70,28 @@ class Main:
                 height = 1
 
             if(tree.isLeaf()):
-                scale = self.delta - 8
+                scale = self.delta - 5
             else:
-                scale = self.delta * height
+                scale = self.delta * tree.findDecendants()
 
-            print("working on: ", tree.data, "depth|height: ", depth,"|",height,"--scale: ", scale, tree.isLeaf())
+            # print("working on: ", tree.data, "depth|height: ", depth,"|",height,"--scale: ", scale, tree.isLeaf())
 
 
             #The new Y coordinate
-            y1 = y + 2* self.delta
+            y1 = y + 2.5 * self.delta
 
             #getting X coord based off of if node is parents left or right node
             if (not pos):
                 x1 = x - scale
+                arrowDir = -1
             else:
                 x1 = x + scale
+                arrowDir = 1
 
-            print("creating: ", tree.data, "X1 is: ", x1)
-            #Drawing current node    
+            # print("creating: ", tree.data, "X1 is: ", x1)
+            #Drawing current node, and arrow    
             self.createNode(x1,y1,tree.data)
+            self.canvas.create_line(x, y+20, x1, y1-20, arrow=LAST,tags = "tree")
 
         #Recursively drawing rest of tree
         self.drawTree(tree.left,x1,y1,False)
@@ -107,21 +105,20 @@ class Main:
         self.canvas.delete("tree")
 
         #Making sure user input is an integer
-        # try:
-        userInput = int(self.userInput.get()) 
-
-        # If this is the first entity in the tree, create the tree
-        if (self.empty):
-            self.avl_tree = AVL(userInput)
-            self.empty = False
-        # Otherwise insert in tree             
-        else:
-            self.avl_tree = self.avl_tree.insert(userInput)  
-        
-        print("number of kids", self.avl_tree.findDecendants(), "-------------------------------------------------------") 
-        return self.drawTree(self.avl_tree,self.width/2, 30)
-        # except:
-        #     return self.error()       
+        try:
+            userInput = int(self.userInput.get()) 
+            # If this is the first entity in the tree, create the tree
+            if (self.empty):
+                self.avl_tree = AVL(userInput)
+                self.empty = False
+            # Otherwise insert in tree             
+            else:
+                self.avl_tree = self.avl_tree.insert(userInput)  
+            
+            # print("number of kids", self.avl_tree.findDecendants(), "-------------------------------------------------------") 
+            return self.drawTree(self.avl_tree,self.width/2, 30)
+        except:
+            return self.error()       
 
 
 
