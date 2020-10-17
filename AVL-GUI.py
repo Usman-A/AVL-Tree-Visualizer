@@ -10,7 +10,7 @@ class Main:
 
         #Adding a title to the window, and setting attributes
         window.title("AVL Tree")
-        self.width = 600
+        self.width = 900
         self.height = 600
         self.canvas = Canvas(window, width = self.width, height = self.height,bg="white")
         self.canvas.pack()
@@ -23,7 +23,7 @@ class Main:
         self.y0 = 10
         self.x1 = self.width/2 + 20
         self.y1 = 50
-        self.delta = 20
+        self.delta = 30
 
         # Creating a window and adding labels
         frame1 = Frame(window)
@@ -41,40 +41,63 @@ class Main:
 
     #Creating a node from user input
     #draws a circle with a number in it
-    def createNode(self,x,y,data):
+    def createNode(self,x,y,data):        
         r = 20
         self.canvas.create_oval(x-r,y-r,x+r,y+r, tags = "tree")        
         self.canvas.create_text(x-6, y, anchor=W, text=data, tags = "tree")
-        # print(self.avl_tree)
 
     def error(self):
         self.canvas.create_text(self.width/2 - 100, self.height/2, anchor=W, text="Please make sure your input is a number", tags = "tree")
 
     #Testing preorderTraversal code
-    #Passing a tree, a boolean pos, left is false right is true
-    def preOrderTrav(self,tree, pos):
-
+    #Tree is the tree that needs to be drawn
+    #Pos is a boolean representing left or right, False is left. 
+    def drawTree(self,tree,x,y,pos=None):
+        #If the tree is null, exit.
         if (tree == None):
             return
 
-        #Number of levels between initial and last, will help in calcuating the positions of he nodes
         depth = tree.getDepth()
 
+        #If it's the root node
         if (depth == 0):
-            self.createNode(300,30,tree.data)
-            return
-
-        #X will be positive if going right, negative if going left
-        #y will remain negative
-        # scale movement by depth
-        
-        #create left
-        if (not pos):
-            self.createNode(x, tree.data)ls
-        else:
             self.createNode(x,y,tree.data)
-        self.preOrderTrav(tree.left, False)
-        self.preOrderTrav(tree.right,True)
+            x1 = x
+            y1 = y
+
+        #Otherwise            
+        else:
+
+            #Getting spacing between nodes, this is done using the parents tree height
+            if (tree.parent.getHeight() > 0):
+                height = tree.parent.getHeight() + 2
+            else:
+                height = 1
+
+            if(tree.isLeaf()):
+                scale = self.delta - 8
+            else:
+                scale = self.delta * height
+
+            print("working on: ", tree.data, "depth|height: ", depth,"|",height,"--scale: ", scale, tree.isLeaf())
+
+
+            #The new Y coordinate
+            y1 = y + 2* self.delta
+
+            #getting X coord based off of if node is parents left or right node
+            if (not pos):
+                x1 = x - scale
+            else:
+                x1 = x + scale
+
+            print("creating: ", tree.data, "X1 is: ", x1)
+            #Drawing current node    
+            self.createNode(x1,y1,tree.data)
+
+        #Recursively drawing rest of tree
+        self.drawTree(tree.left,x1,y1,False)
+        self.drawTree(tree.right,x1,y1,True)
 
 
 
@@ -84,25 +107,21 @@ class Main:
         self.canvas.delete("tree")
 
         #Making sure user input is an integer
-        try:
-            userInput = int(self.userInput.get()) 
+        # try:
+        userInput = int(self.userInput.get()) 
 
-            # If this is the first entity in the tree, create the tree
-            if (self.empty):
-                self.avl_tree = AVL(userInput)
-                self.empty = False
-            # Otherwise insert in tree             
-            else:
-                self.avl_tree = self.avl_tree.insert(userInput)  
-
-            # drawNode -- This should later be changed to call a drawTree function
-            if (userInput == 12):
-                self.preOrderTrav(self.avl_tree)   
-            
-            return self.createNode(300,30, userInput)
-        except:
-            return self.error()       
-
+        # If this is the first entity in the tree, create the tree
+        if (self.empty):
+            self.avl_tree = AVL(userInput)
+            self.empty = False
+        # Otherwise insert in tree             
+        else:
+            self.avl_tree = self.avl_tree.insert(userInput)  
+        
+        print("number of kids", self.avl_tree.findDecendants(), "-------------------------------------------------------") 
+        return self.drawTree(self.avl_tree,self.width/2, 30)
+        # except:
+        #     return self.error()       
 
 
 
