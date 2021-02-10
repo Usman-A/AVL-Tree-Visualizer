@@ -6,10 +6,10 @@ Visualization of an AVL, shows how the tree gets balanced after each insertion
 Running the program is very straightforward, clone the repo, and run the python file. You need to have the `tkinter` python package installed on your system.
 
 ### Windows 
-* `py.exe .\AVL-GUI.py`
+### `py.exe .\AVL-GUI.py`
 
 ### Linux
-* `python3 ./AVL-GUI.py`
+### `python3 ./AVL-GUI.py`
 
 ## Coming soon
 Currently if the tree get's too large, it is drawn out of the frame, I will be adding an expandable frame in the future. 
