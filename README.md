@@ -3,7 +3,7 @@ Visualization of an AVL, shows how the tree gets balanced after each insertion
 
 ## Running the program
 
-Running the program is very straightforward, clone the repo, and run the python file. 
+Running the program is very straightforward, clone the repo, and run the python file. You need to have the tkinter `python` package installed on your system.
 
 ### Windows 
 * `py.exe .\AVL-GUI.py`
