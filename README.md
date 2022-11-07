@@ -1,5 +1,5 @@
 # AVL-Tree-Visualizer
-Visualization of an AVL, shows how the tree gets balanced after each insertion 
+Visualization of an AVL, shows how the tree gets balanced after each insertion.
 
 ## Running the program
 
@@ -10,9 +10,6 @@ Running the program is very straightforward, clone the repo, and run the python 
 
 ### Linux
 ### `python3 ./AVL-GUI.py`
-
-## Coming soon
-Currently if the tree get's too large, it is drawn out of the frame, I will be adding an expandable frame in the future. 
 
 ## trees.py
 This file contains classes for three different types of trees:
